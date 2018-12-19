@@ -10,10 +10,6 @@
                 <v-spacer></v-spacer>
               </v-toolbar>
               <v-card-text>
-                <!-- <v-form>
-                  <v-text-field prepend-icon="person" name="login" placeholder="Login" type="text"></v-text-field>
-                  <v-text-field id="password" prepend-icon="lock" name="password" placeholder="Password" type="password"></v-text-field>
-                </v-form> -->
                 <v-form @submit.prevent="submit" v-model="valid" ref="form">
                         <v-text-field
                           label="Email"
@@ -60,7 +56,7 @@
 
 <style scoped>
 #inspire {
-  background: url("../assets/images/login_background.jpg") no-repeat;
+  background: url("../../assets/images/login_background.jpg") no-repeat;
   background-position: center center;
   background-size: cover;
 }
@@ -68,8 +64,8 @@
 
 <script>
 import { auth } from 'firebase'
-import { db } from '../firebase.js'
-import { userType } from '../Middleware/determine_user_type.js'
+import { db } from '../../firebase.js'
+import { userType } from '../../Middleware/determine_user_type.js'
 
 export default {
   data () {

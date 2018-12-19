@@ -5,9 +5,18 @@ import Vuex from 'vuex'
 import { auth } from 'firebase'
 
 // Core Component Imports
-import Login from '@/components/Login'
-import AdminHome from '@/components/AdminHome'
-import TopToolbar from '@/components/TopToolbar'
+import Login from '@/components/CoreComponents/Login'
+import TopToolbar from '@/components/CoreComponents/TopToolbar'
+
+// Admin View Imports
+import AdminHome from '@/components/AdminViews/AdminHome'
+import AdminEmployees from '@/components/AdminViews/AdminEmployees'
+import AdminTasks from '@/components/AdminViews/AdminTasks'
+import AdminEvents from '@/components/AdminViews/AdminEvents'
+import AdminAssignments from '@/components/AdminViews/AdminAssignments'
+
+// Chef View Imports
+import ChefHome from '@/components/ChefViews/ChefHome'
 
 // Plugin Declarations
 Vue.use(VueRouter)
@@ -20,13 +29,51 @@ Vue.component('top-toolbar', TopToolbar)
 const router = new VueRouter({
   mode: 'history',
   routes: [
+    // Core Components
     {
       path: '/',
       component: Login
     },
+    // Admin Views
     {
       path: '/Admin',
       component: AdminHome,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/Admin/Employees',
+      component: AdminEmployees,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/Admin/Tasks',
+      component: AdminTasks,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/Admin/Events',
+      component: AdminEvents,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/Admin/Assignments',
+      component: AdminAssignments,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    // Chef Views
+    {
+      path: '/Chef',
+      component: ChefHome,
       meta: {
         requiresAuth: true
       }
