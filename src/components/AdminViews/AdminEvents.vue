@@ -112,12 +112,9 @@ export default {
       reqName: '',
       reqColor: '',
       reqDate: '',
-      reqDescr: '',
-      newFirstName: '',
-      newLastName: '',
-      newNickname: '',
-      newEmail: '',
-      newUserType: '',
+      newName: '',
+      newColor: '',
+      newDate: '',
       eventHeaders: [
         {
           text: 'Event Name',
