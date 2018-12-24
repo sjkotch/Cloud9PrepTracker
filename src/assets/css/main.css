@@ -16,8 +16,41 @@
   -ms-user-select: none;
   user-select: none;
 }
-
+.table_info{
+  font-weight: 200;
+  text-align: right;
+  font-size: 20px;
+  margin-right: 2.7em;
+  /* Makes Title Unselectable */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.table_title{
+  color: gray; 
+  font-weight: 500;
+  text-align: left;
+  font-size: 24px;
+  margin-left: 2.5em;
+  margin-bottom: -1.2em;
+  /* Makes Title Unselectable */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 .back_btn{
   margin-top:-5.4em;
   margin-left: 2em;
+  padding-left:.5em;
+}
+.add_btn{
+  float: right;
+  margin-top: -3.3em;
+  margin-right: 2em;
 }
