@@ -36,13 +36,13 @@
                   <v-container grid-list-md>
                     <v-layout wrap>
                       <v-flex xs12 sm6 md4>
-                        <v-text-field label="Event Name" :value='reqName' ></v-text-field>
+                        <v-text-field label="Event Name" :value='reqName' v-model="reqName"></v-text-field>
                       </v-flex>
                       <v-flex xs12>
-                        <v-text-field label="Color" :value='reqColor'></v-text-field>
+                        <v-text-field label="Color" :value='reqColor' v-model="reqColor"></v-text-field>
                       </v-flex>
                       <v-flex xs12>
-                        <v-text-field label="Date" :value='reqDate'></v-text-field>
+                        <v-text-field label="Date" :value='reqDate' v-model="reqDate"></v-text-field>
                       </v-flex>
                     </v-layout>
                   </v-container>
@@ -50,7 +50,7 @@
                 <v-card-actions>
                   <v-spacer></v-spacer>
                   <v-btn color="blue darken-1" flat @click="dialog = false">Close</v-btn>
-                  <v-btn color="blue darken-1" flat @click="dialog = false">Save</v-btn>
+                  <v-btn color="blue darken-1" flat @click="editEvent()" :loading="loading" :disabled="loading">Save</v-btn>
                 </v-card-actions>
               </v-card>
             </v-dialog>
@@ -63,13 +63,13 @@
                   <v-container grid-list-md>
                     <v-layout wrap>
                       <v-flex xs12 sm6 md4>
-                        <v-text-field label="Event Name" :value='newName' ></v-text-field>
+                        <v-text-field label="Event Name" v-model='newName' ></v-text-field>
                       </v-flex>
                       <v-flex xs12>
-                        <v-text-field label="Color" :value='newColor'></v-text-field>
+                        <v-text-field label="Color" v-model='newColor'></v-text-field>
                       </v-flex>
                       <v-flex xs12>
-                        <v-text-field label="Date" :value='newDate'></v-text-field>
+                        <v-text-field label="Date" v-model='newDate'></v-text-field>
                       </v-flex>
                     </v-layout>
                   </v-container>
@@ -77,7 +77,7 @@
                 <v-card-actions>
                   <v-spacer></v-spacer>
                   <v-btn color="blue darken-1" flat @click="addNew = false">Close</v-btn>
-                  <v-btn color="blue darken-1" flat @click="addEmployee">Save</v-btn>
+                  <v-btn color="blue darken-1" flat @click="addEvent" :loading="loading" :disabled="loading">Add</v-btn>
                 </v-card-actions>
               </v-card>
             </v-dialog>
@@ -115,6 +115,8 @@ export default {
       newName: '',
       newColor: '',
       newDate: '',
+      chosenEventId: '',
+      loading: false,
       eventHeaders: [
         {
           text: 'Event Name',
@@ -132,7 +134,7 @@ export default {
           text: 'Date of Event',
           align: 'left',
           value: 'date',
-          sortable: true
+          sortable: false
         }
       ],
       events: [],
@@ -173,9 +175,43 @@ export default {
       this.reqName = event.title
       this.reqColor = event.color
       this.reqDate = event.date
+      this.chosenEventId = event.id
     },
     addEvent () {
-      this.addNew = false
+      this.loading = true
+      db.collection('events').add(
+        {
+          title: this.newName,
+          date: this.newDate,
+          color: this.newColor
+        })
+        .then(() => {
+          this.events.push(
+            {
+              title: this.newName,
+              date: this.newDate,
+              color: this.newColor
+            }
+          )
+          this.addNew = false
+          this.loading = false
+          this.newName = ''
+          this.newDate = ''
+          this.newColor = ''
+        })
+        .catch(err => console.log(err))
+    },
+    editEvent () {
+      db.collection('events').doc(this.chosenEventId).update({title: this.reqName}).catch(error => console.log(error))
+      db.collection('events').doc(this.chosenEventId).update({date: this.reqDate}).catch(error => console.log(error))
+      db.collection('events').doc(this.chosenEventId).update({color: this.reqColor}).catch(error => console.log(error))
+      this.reqName = ''
+      this.reqDate = ''
+      this.reqColor = ''
+      this.events = []
+      this.getEvents()
+      this.loading = false
+      this.dialog = false
     }
   }
 }
