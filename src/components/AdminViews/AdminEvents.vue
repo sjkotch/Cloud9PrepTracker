@@ -50,7 +50,7 @@
                 <v-card-actions>
                   <v-spacer></v-spacer>
                   <v-btn color="blue darken-1" flat @click="dialog = false">Close</v-btn>
-                  <v-btn color="blue darken-1" flat @click="editEvent()" :loading="loading" :disabled="loading">Save</v-btn>
+                  <v-btn color="blue darken-1" flat @click="editEvent" :loading="loading" :disabled="loading">Save</v-btn>
                 </v-card-actions>
               </v-card>
             </v-dialog>
@@ -202,9 +202,11 @@ export default {
         .catch(err => console.log(err))
     },
     editEvent () {
-      db.collection('events').doc(this.chosenEventId).update({title: this.reqName}).catch(error => console.log(error))
-      db.collection('events').doc(this.chosenEventId).update({date: this.reqDate}).catch(error => console.log(error))
-      db.collection('events').doc(this.chosenEventId).update({color: this.reqColor}).catch(error => console.log(error))
+      db.collection('events').doc(this.chosenEventId).update({
+        title: this.reqName,
+        date: this.reqDate,
+        color: this.reqColor
+      }).catch(error => console.log(error))
       this.reqName = ''
       this.reqDate = ''
       this.reqColor = ''

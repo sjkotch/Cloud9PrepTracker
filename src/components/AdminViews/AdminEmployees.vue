@@ -37,19 +37,19 @@
                   <v-container grid-list-md>
                     <v-layout wrap>
                       <v-flex xs12 sm6 md4>
-                        <v-text-field label="First name" :value='reqFirstName' ></v-text-field>
+                        <v-text-field label="First name" :value='reqFirstName' v-model='reqFirstName' ></v-text-field>
                       </v-flex>
                       <v-flex xs12 sm6 md4>
-                        <v-text-field label="Last name" :value='reqLastName'></v-text-field>
+                        <v-text-field label="Last name" :value='reqLastName' v-model='reqLastName'></v-text-field>
                       </v-flex>
                       <v-flex xs12>
-                        <v-text-field label="Nickname" :value='reqNickname'></v-text-field>
+                        <v-text-field label="Nickname" :value='reqNickname' v-model='reqNickname'></v-text-field>
                       </v-flex>
                       <v-flex xs12>
-                        <v-text-field label="Email" :value='reqEmail'></v-text-field>
+                        <v-text-field label="Email" :value='reqEmail' v-model='reqEmail'></v-text-field>
                       </v-flex>
                       <v-flex xs12>
-                        <v-select :items="['admin', 'chef']" label="User Type" :value='reqUserType'></v-select>
+                        <v-select :items="['admin', 'chef']" label="User Type" v-model='reqUserType'></v-select>
                       </v-flex>
                     </v-layout>
                   </v-container>
@@ -57,7 +57,7 @@
                 <v-card-actions>
                   <v-spacer></v-spacer>
                   <v-btn color="blue darken-1" flat @click="dialog = false">Close</v-btn>
-                  <v-btn color="blue darken-1" flat @click="dialog = false">Save</v-btn>
+                  <v-btn color="blue darken-1" flat @click="editEmployee" :loading="loading" :disabled="loading">Save</v-btn>
                 </v-card-actions>
               </v-card>
             </v-dialog>
@@ -70,19 +70,19 @@
                   <v-container grid-list-md>
                     <v-layout wrap>
                       <v-flex xs12 sm6 md4>
-                        <v-text-field label="First name" :value='newFirstName' ></v-text-field>
+                        <v-text-field label="First name" v-model='newFirstName' ></v-text-field>
                       </v-flex>
                       <v-flex xs12 sm6 md4>
-                        <v-text-field label="Last name" :value='newLastName'></v-text-field>
+                        <v-text-field label="Last name" v-model='newLastName'></v-text-field>
                       </v-flex>
                       <v-flex xs12>
-                        <v-text-field label="Nickname" :value='newNickname'></v-text-field>
+                        <v-text-field label="Nickname" v-model='newNickname'></v-text-field>
                       </v-flex>
                       <v-flex xs12>
-                        <v-text-field label="Email" :value='newEmail'></v-text-field>
+                        <v-text-field label="Email" v-model='newEmail'></v-text-field>
                       </v-flex>
                       <v-flex xs12>
-                        <v-select :items="['admin', 'chef']" label="User Type" :value='newUserType'></v-select>
+                        <v-select :items="['admin', 'chef']" label="User Type" v-model='newUserType'></v-select>
                       </v-flex>
                     </v-layout>
                   </v-container>
@@ -90,7 +90,7 @@
                 <v-card-actions>
                   <v-spacer></v-spacer>
                   <v-btn color="blue darken-1" flat @click="addNew = false">Close</v-btn>
-                  <v-btn color="blue darken-1" flat @click="addEmployee">Save</v-btn>
+                  <v-btn color="blue darken-1" flat @click="addEmployee" :loading="loading" :disabled="loading">Add</v-btn>
                 </v-card-actions>
               </v-card>
             </v-dialog>
@@ -132,6 +132,8 @@ export default {
       newNickname: '',
       newEmail: '',
       newUserType: '',
+      chosenEmployeeId: '',
+      loading: false,
       employeeHeaders: [
         {
           text: 'Name',
@@ -199,9 +201,56 @@ export default {
       this.reqNickname = user.nickname
       this.reqEmail = user.email
       this.reqUserType = user.user_type
+      this.chosenEmployeeId = user.id
     },
     addEmployee () {
-      this.addNew = false
+      this.loading = true
+      db.collection('employees').add(
+        {
+          first_name: this.newFirstName,
+          last_name: this.newLastName,
+          nickname: this.newNickname,
+          email: this.newEmail,
+          user_type: this.newUserType
+        })
+        .then(() => {
+          this.chefs.push(
+            {
+              first_name: this.newFirstName,
+              last_name: this.newLastName,
+              nickname: this.newNickname,
+              email: this.newEmail,
+              user_type: this.newUserType,
+              name: this.newFirstName + ' ' + this.newLastName
+            }
+          )
+          this.addNew = false
+          this.loading = false
+          this.first_name = ''
+          this.last_name = ''
+          this.nickname = ''
+          this.email = ''
+          this.user_type = ''
+        })
+        .catch(err => console.log(err))
+    },
+    editEmployee () {
+      db.collection('employees').doc(this.chosenEmployeeId).update({
+        first_name: this.reqFirstName,
+        last_name: this.reqLastName,
+        nickname: this.reqNickname,
+        email: this.reqEmail,
+        user_type: this.reqUserType
+      }).catch(error => console.log(error))
+      this.first_name = ''
+      this.last_name = ''
+      this.nickname = ''
+      this.email = ''
+      this.user_type = ''
+      this.chefs = []
+      this.getEmployees()
+      this.loading = false
+      this.dialog = false
     }
   }
 }

@@ -35,10 +35,10 @@
                   <v-container grid-list-md>
                     <v-layout wrap>
                       <v-flex xs12 sm6 md4>
-                        <v-text-field label="Task" :value='reqTitle' ></v-text-field>
+                        <v-text-field label="Task" :value='reqTitle' v-model='reqTitle'></v-text-field>
                       </v-flex>
                       <v-flex xs12>
-                        <v-textarea label="Directions" :value='reqDirections'></v-textarea>
+                        <v-textarea label="Directions" :value='reqDirections' v-model='reqDirections'></v-textarea>
                       </v-flex>
                     </v-layout>
                   </v-container>
@@ -46,7 +46,7 @@
                 <v-card-actions>
                   <v-spacer></v-spacer>
                   <v-btn color="blue darken-1" flat @click="dialog = false">Close</v-btn>
-                  <v-btn color="blue darken-1" flat @click="dialog = false">Save</v-btn>
+                  <v-btn color="blue darken-1" flat @click="editTask" :loading="loading" :disabled="loading">Save</v-btn>
                 </v-card-actions>
               </v-card>
             </v-dialog>
@@ -59,10 +59,10 @@
                   <v-container grid-list-md>
                     <v-layout wrap>
                       <v-flex xs12 sm6 md4>
-                        <v-text-field label="Task" :value='newTitle' ></v-text-field>
+                        <v-text-field label="Task" v-model='newTitle' ></v-text-field>
                       </v-flex>
                       <v-flex xs12>
-                        <v-textarea label="Directions" :value='newDirections'></v-textarea>
+                        <v-textarea label="Directions" v-model='newDirections'></v-textarea>
                       </v-flex>
                     </v-layout>
                   </v-container>
@@ -70,7 +70,7 @@
                 <v-card-actions>
                   <v-spacer></v-spacer>
                   <v-btn color="blue darken-1" flat @click="addNew = false">Close</v-btn>
-                  <v-btn color="blue darken-1" flat @click="addTask">Save</v-btn>
+                  <v-btn color="blue darken-1" flat @click="addTask" :loading="loading" :disabled="loading">Add</v-btn>
                 </v-card-actions>
               </v-card>
             </v-dialog>
@@ -106,6 +106,8 @@ export default {
       reqDirections: '',
       newTitle: '',
       newDirections: '',
+      chosenTaskId: '',
+      loading: false,
       taskHeaders: [
         {
           text: 'Task',
@@ -157,9 +159,40 @@ export default {
       this.dialog = true
       this.reqTitle = task.title
       this.reqDirections = task.directions
+      this.chosenTaskId = task.id
     },
     addTask () {
-      this.addNew = false
+      this.loading = true
+      db.collection('tasks').add(
+        {
+          title: this.newTitle,
+          directions: this.newDirections
+        })
+        .then(() => {
+          this.tasks.push(
+            {
+              title: this.newTitle,
+              directions: this.newDirections
+            }
+          )
+          this.addNew = false
+          this.loading = false
+          this.newTitle = ''
+          this.newDirections = ''
+        })
+        .catch(err => console.log(err))
+    },
+    editTask () {
+      db.collection('tasks').doc(this.chosenTaskId).update({
+        title: this.reqTitle,
+        directions: this.reqDirections
+      }).catch(error => console.log(error))
+      this.reqTitle = ''
+      this.reqDirections = ''
+      this.tasks = []
+      this.getTasks()
+      this.loading = false
+      this.dialog = false
     }
   }
 }
