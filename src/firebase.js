@@ -3,12 +3,12 @@ import 'firebase/firestore'
 
 // firebase init goes here
 const config = {
-  apiKey: 'AIzaSyAvljnOACm6IyvQObimAhFfmTXi3PPgSo8',
-  authDomain: 'prep-tracker-b0bd2.firebaseapp.com',
-  databaseURL: 'https://prep-tracker-b0bd2.firebaseio.com',
-  projectId: 'prep-tracker-b0bd2',
-  storageBucket: 'prep-tracker-b0bd2.appspot.com',
-  messagingSenderId: '478618722755'
+  apiKey: '',
+  authDomain: '',
+  databaseURL: '',
+  projectId: '',
+  storageBucket: '',
+  messagingSenderId: ''
 }
 firebase.initializeApp(config)
 
