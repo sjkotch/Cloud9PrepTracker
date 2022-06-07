@@ -1,5 +1,7 @@
 # prep-cook-assistant
 
+This project was a POC for my own practice with Vue.
+
 > A Vue.js project
 
 ## Build Setup
